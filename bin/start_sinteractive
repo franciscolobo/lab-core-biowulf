@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Function to display usage
+usage() {
+  echo "Usage: $0 -m <memory> -c <cpus-per-task> -t <time> -s <scratch> -g <gpu configuration>"
+  exit 1
+}
+
+# Parse command-line options
+while getopts ":m:c:t:" opt; do
+  case $opt in
+    m)
+      mem=$OPTARG
+      ;;
+    c)
+      cpus=$OPTARG
+      ;;
+    t)
+      time=$OPTARG
+      ;;
+    s)
+      scratch=$OPTARG
+      ;;
+    g)
+      gpu=$OPTARG
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      usage
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      usage
+      ;;
+  esac
+done
+
+# Check if required variables are set
+if [ -z "$mem" ] || [ -z "$cpus" ] || [ -z "$time" ]; then
+  usage
+fi
+
+# Run the sinteractive command with the provided options
+sinteractive --gres=lscratch:200 --mem="$mem" --cpus-per-task="$cpus" --time="$time" --tunnel
+
+#sinteractive --mem=150g --cpus-per-task=10 --gres=gpu:a100,lscratch:30 --time=36:00:00 --tunnel
+
+#sinteractive --gres=lscratch:100 --mem=$1 --cpus-per-task=$2 --time=$3 --tunnel

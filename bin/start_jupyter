@@ -1,0 +1,2 @@
+module load jupyter
+jupyter lab --ip localhost --port $PORT1 --no-browser
